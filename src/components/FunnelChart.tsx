@@ -53,20 +53,22 @@ export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
     if (!chartRef.current) return
     setDownloading(true)
     try {
-      chartRef.current.classList.add('exporting')
+      const dropLabels = chartRef.current.querySelectorAll<HTMLElement>('.funnel-drop-label')
+      dropLabels.forEach(el => { el.style.visibility = 'hidden' })
       const dataUrl = await toPng(chartRef.current, {
         cacheBust: true,
         backgroundColor: '#f0f2f5',
         pixelRatio: 2,
         style: { padding: '32px' },
       })
-      chartRef.current.classList.remove('exporting')
+      dropLabels.forEach(el => { el.style.visibility = '' })
       const link = document.createElement('a')
       link.download = 'funnel-chart.png'
       link.href = dataUrl
       link.click()
     } finally {
-      chartRef.current?.classList.remove('exporting')
+      chartRef.current?.querySelectorAll<HTMLElement>('.funnel-drop-label')
+        .forEach(el => { el.style.visibility = '' })
       setDownloading(false)
     }
   }

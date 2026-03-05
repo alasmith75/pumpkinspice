@@ -27,9 +27,6 @@
   align-items: center;
 }
 
-.funnel-chart-capture.exporting .funnel-drop-label {
-  display: none;
-}
 
 .funnel-drop-label {
   font-size: 11px;
