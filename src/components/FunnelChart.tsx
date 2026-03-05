@@ -53,17 +53,20 @@ export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
     if (!chartRef.current) return
     setDownloading(true)
     try {
+      chartRef.current.classList.add('exporting')
       const dataUrl = await toPng(chartRef.current, {
         cacheBust: true,
         backgroundColor: '#f0f2f5',
         pixelRatio: 2,
         style: { padding: '32px' },
       })
+      chartRef.current.classList.remove('exporting')
       const link = document.createElement('a')
       link.download = 'funnel-chart.png'
       link.href = dataUrl
       link.click()
     } finally {
+      chartRef.current?.classList.remove('exporting')
       setDownloading(false)
     }
   }

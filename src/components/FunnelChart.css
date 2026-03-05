@@ -27,6 +27,10 @@
   align-items: center;
 }
 
+.funnel-chart-capture.exporting .funnel-drop-label {
+  display: none;
+}
+
 .funnel-drop-label {
   font-size: 11px;
   font-weight: 600;
@@ -70,9 +74,6 @@
   color: #fff;
   text-shadow: 0 1px 3px rgba(0,0,0,0.25);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 60%;
 }
 
 .funnel-bar-value {
