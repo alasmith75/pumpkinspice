@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
+import { toPng } from 'html-to-image'
 import './FunnelChart.css'
 
 export interface FunnelStage {
@@ -19,6 +20,9 @@ const PALETTE = [
 ]
 
 export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
+  const chartRef = useRef<HTMLDivElement>(null)
+  const [downloading, setDownloading] = useState(false)
+
   const sorted = [...stages].sort((a, b) => b.value - a.value)
   const max = sorted[0]?.value || 1
 
@@ -45,33 +49,63 @@ export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
     onChange(stages.filter((s) => s.id !== id))
   }
 
+  async function downloadPng() {
+    if (!chartRef.current) return
+    setDownloading(true)
+    try {
+      const dataUrl = await toPng(chartRef.current, {
+        cacheBust: true,
+        backgroundColor: '#f0f2f5',
+        pixelRatio: 2,
+        style: { padding: '32px' },
+      })
+      const link = document.createElement('a')
+      link.download = 'funnel-chart.png'
+      link.href = dataUrl
+      link.click()
+    } finally {
+      setDownloading(false)
+    }
+  }
+
   return (
     <div className="funnel-wrapper">
-      <div className="funnel-chart">
-        {sorted.map((stage, i) => {
-          const widthPct = (stage.value / max) * 100
-          const dropPct = i > 0 ? Math.round((1 - stage.value / sorted[i - 1].value) * 100) : null
-          return (
-            <div key={stage.id} className="funnel-row">
-              {dropPct !== null && (
-                <div className="funnel-drop-label">▼ {dropPct}% drop</div>
-              )}
-              <div className="funnel-bar-container">
-                <div
-                  className="funnel-bar"
-                  style={{
-                    width: `${widthPct}%`,
-                    background: stage.color,
-                  }}
-                >
-                  <span className="funnel-bar-label">{stage.label}</span>
-                  <span className="funnel-bar-value">{stage.value.toLocaleString()}</span>
+      {/* Capture area */}
+      <div ref={chartRef} className="funnel-chart-capture">
+        <div className="funnel-chart">
+          {sorted.map((stage, i) => {
+            const widthPct = (stage.value / max) * 100
+            const dropPct = i > 0 ? Math.round((1 - stage.value / sorted[i - 1].value) * 100) : null
+            return (
+              <div key={stage.id} className="funnel-row">
+                {dropPct !== null && (
+                  <div className="funnel-drop-label">▼ {dropPct}% drop</div>
+                )}
+                <div className="funnel-bar-container">
+                  <div
+                    className="funnel-bar"
+                    style={{
+                      width: `${widthPct}%`,
+                      background: stage.color,
+                    }}
+                  >
+                    <span className="funnel-bar-label">{stage.label}</span>
+                    <span className="funnel-bar-value">{stage.value.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
+
+      <button
+        className="download-btn"
+        onClick={downloadPng}
+        disabled={downloading}
+      >
+        {downloading ? 'Generating…' : '↓ Download PNG'}
+      </button>
 
       <div className="funnel-editor">
         <h2 className="editor-title">Edit Stages</h2>

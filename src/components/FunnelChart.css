@@ -8,6 +8,11 @@
 
 /* ── Chart ─────────────────────────────────────────────────────────── */
 
+.funnel-chart-capture {
+  width: 100%;
+  max-width: 640px;
+}
+
 .funnel-chart {
   width: 100%;
   max-width: 640px;
@@ -76,6 +81,36 @@
   color: rgba(255, 255, 255, 0.92);
   text-shadow: 0 1px 3px rgba(0,0,0,0.25);
   white-space: nowrap;
+}
+
+/* ── Download button ─────────────────────────────────────────────────── */
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.download-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ── Editor ─────────────────────────────────────────────────────────── */
