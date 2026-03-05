@@ -91,7 +91,8 @@ export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
                       width: `${widthPct}%`,
                       background: stage.color,
                     }}
-                  >
+                  />
+                  <div className="funnel-bar-text">
                     <span className="funnel-bar-label">{stage.label}</span>
                     <span className="funnel-bar-value">{stage.value.toLocaleString()}</span>
                   </div>
