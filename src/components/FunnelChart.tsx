@@ -52,14 +52,10 @@ export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
   async function downloadPng() {
     if (!chartRef.current) return
     setDownloading(true)
-    const clone = chartRef.current.cloneNode(true) as HTMLElement
-    clone.querySelectorAll('.funnel-drop-label').forEach(el => el.remove())
-    clone.style.position = 'fixed'
-    clone.style.left = '-9999px'
-    clone.style.top = '0'
-    document.body.appendChild(clone)
+    const labels = chartRef.current.querySelectorAll<HTMLElement>('.funnel-drop-label')
+    labels.forEach(el => { el.style.visibility = 'hidden' })
     try {
-      const dataUrl = await toPng(clone, {
+      const dataUrl = await toPng(chartRef.current, {
         cacheBust: true,
         backgroundColor: '#f0f2f5',
         pixelRatio: 2,
@@ -70,7 +66,7 @@ export default function FunnelChart({ stages, onChange }: FunnelChartProps) {
       link.href = dataUrl
       link.click()
     } finally {
-      document.body.removeChild(clone)
+      labels.forEach(el => { el.style.visibility = '' })
       setDownloading(false)
     }
   }
